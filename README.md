@@ -1,4 +1,4 @@
-# BeaverCode Project Scaffold
+# BeaverCode Project Dam
 
 Purpose: Reusable project foundation for new projects with consistent structure and documentation.
 
