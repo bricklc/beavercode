@@ -1,0 +1,30 @@
+{
+  "name": "beavercode",
+  "version": "2.0.0",
+  "description": "Documentation-to-implementation workflow system for Claude Code",
+  "main": "bootstrap.js",
+  "bin": {
+    "beavercode": "./bootstrap.js"
+  },
+  "keywords": [
+    "claude",
+    "workflow",
+    "documentation",
+    "automation",
+    "testing",
+    "mcp",
+    "ultrathink"
+  ],
+  "author": "bricklc",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bricklc/beavercode.git"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

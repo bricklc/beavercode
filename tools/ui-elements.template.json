@@ -1,0 +1,16 @@
+{
+  "ProjectName": {
+    "buttons": {
+      "Submit": "#submit-btn",
+      "Cancel": "#cancel-btn"
+    },
+    "inputs": {
+      "Username": "#username-input",
+      "Password": "#password-input"
+    },
+    "displays": {
+      "Status": "#status-display",
+      "Results": "#results-panel"
+    }
+  }
+}

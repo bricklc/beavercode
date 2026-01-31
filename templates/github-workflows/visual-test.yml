@@ -1,0 +1,64 @@
+name: Visual Tests
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+
+jobs:
+  visual-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Python dependencies
+        run: |
+          pip install numpy
+
+      - name: Install Node dependencies
+        run: |
+          npm install
+          npx playwright install chromium
+
+      - name: Start backend server
+        run: |
+          python -m backend.server &
+          sleep 2
+
+      - name: Start frontend server
+        run: |
+          npx serve frontend -p 3001 &
+          sleep 2
+
+      - name: Run visual tests
+        run: |
+          node tools/browser-actions.js --commands tools/feawiz-frontend-test.json
+        continue-on-error: true
+        id: visual-tests
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-test-screenshots
+          path: testing/screenshots/
+          retention-days: 30
+
+      - name: Check test results
+        if: steps.visual-tests.outcome == 'failure'
+        run: |
+          echo "Visual tests failed"
+          exit 1

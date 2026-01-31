@@ -1,0 +1,12 @@
+{
+  "name": "feawiz-browser-mcp",
+  "version": "1.0.0",
+  "description": "Browser automation MCP server for FEAWiz",
+  "type": "module",
+  "main": "browser-server.js",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "playwright": "^1.40.0",
+    "zod": "^3.22.0"
+  }
+}
