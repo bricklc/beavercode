@@ -100,6 +100,35 @@ function createDir(dir) {
   return false;
 }
 
+function ensureRequirement(targetDir, packageName) {
+  const reqPath = path.join(targetDir, 'requirements.txt');
+  const desired = packageName.trim();
+
+  if (!fs.existsSync(reqPath)) {
+    fs.writeFileSync(reqPath, `${desired}\n`);
+    log(`  Created: ${reqPath}`, COLORS.green);
+    return true;
+  }
+
+  const content = fs.readFileSync(reqPath, 'utf8');
+  const lines = content.split(/\r?\n/);
+  const hasPackage = lines.some(line => {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) return false;
+    return trimmed.split(/[<>=!~\s]/)[0] === desired;
+  });
+
+  if (hasPackage) {
+    log(`  Skip: ${reqPath} (already has ${desired})`, COLORS.yellow);
+    return false;
+  }
+
+  const newContent = content.replace(/\s*$/, '') + `\n${desired}\n`;
+  fs.writeFileSync(reqPath, newContent);
+  log(`  Updated: ${reqPath} (+${desired})`, COLORS.green);
+  return true;
+}
+
 function init(targetDir, options = {}) {
   const { minimal = false, overwrite = false } = options;
   const kitDir = __dirname;
@@ -198,6 +227,10 @@ function init(targetDir, options = {}) {
     path.join(targetDir, 'CLAUDE.md'),
     { overwrite: false }
   );
+
+  // 9. Ensure pydantic in requirements.txt
+  log('\nEnsuring Python dependencies...', COLORS.cyan);
+  ensureRequirement(targetDir, 'pydantic');
 
   // Summary
   log('\n╔════════════════════════════════════════════╗', COLORS.green);
