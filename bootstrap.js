@@ -240,11 +240,12 @@ function init(targetDir, options = {}) {
   log('\nNext steps:', COLORS.bright);
   log('  1. Review and customize CLAUDE.md for your project');
   log('  2. Update current/status.md with your initial state');
+  log('  3. (Python) Run: pip install -r requirements.txt');
   if (!minimal) {
-    log('  3. Rename .mcp.json.template to .mcp.json');
-    log('  4. Update the path in .mcp.json to your project root');
-    log('  5. Run: cd mcp && npm install');
-    log('  6. Restart Claude Code to load MCP server');
+    log('  4. Rename .mcp.json.template to .mcp.json');
+    log('  5. Update the path in .mcp.json to your project root');
+    log('  6. Run: cd mcp && npm install');
+    log('  7. Restart Claude Code to load MCP server');
   }
   log('\nAvailable workflows (use as /command in Claude Code):');
   log('  /ultrathink  - Master orchestrator');

@@ -82,7 +82,12 @@ Only `.agent/workflows/` and `current/` folders.
 ### 1. Configure CLAUDE.md
 Edit `CLAUDE.md` with your project-specific instructions.
 
-### 2. Set Up MCP Server (Full Install)
+### 2. Install Python Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Set Up MCP Server (Full Install)
 ```bash
 # Install MCP dependencies
 cd mcp && npm install
@@ -95,7 +100,7 @@ mv .mcp.json.template .mcp.json
 # Restart Claude Code to load MCP
 ```
 
-### 3. Initialize Session State
+### 4. Initialize Session State
 Update `current/status.md` with your project's current state.
 
 ## Workflows
@@ -166,6 +171,29 @@ Browser MCP server provides these tools to Claude Code:
 ```bash
 node tools/telemetry-viewer.js
 ```
+
+## Agent Loop Server (local automation)
+
+Run a local loop that triggers an agent command every 60s, then waits for a callback
+before starting the next cycle. This is useful for "loop until success metrics are met".
+
+Example (prints the prompt and exits, for smoke testing):
+```bash
+node tools/agent-loop-server.js --command "node -e \"console.log(process.env.AGENT_PROMPT)\""
+```
+
+Example (replace with your actual agent CLI):
+```bash
+node tools/agent-loop-server.js --command "codex --prompt \"{PROMPT}\""
+```
+
+Notes:
+- The server sets `AGENT_PROMPT`, `AGENT_STATUS_PATH`, and `AGENT_WORKFLOW_PATH` env vars.
+- `{PROMPT}`, `{STATUS_PATH}`, `{WORKFLOW_PATH}` placeholders are replaced in the command.
+- Default prompt is: "check workflows/status.md and proceed using workflows/ultrathink.md until all success metrics are met".
+- Use `--interval 60000` to change the interval, `--port 3487` to change the port.
+- By default, the server wraps your command so it always calls back when the command exits.
+  Use `--no-wrap` if your agent posts to `POST /agent/done` itself.
 
 ## CI Integration
 
