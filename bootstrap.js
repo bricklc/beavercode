@@ -129,6 +129,30 @@ function ensureRequirement(targetDir, packageName) {
   return true;
 }
 
+function ensureGitignoreEntry(targetDir, entry) {
+  const gitignorePath = path.join(targetDir, '.gitignore');
+  const normalizedEntry = entry.trim();
+  if (!normalizedEntry) return false;
+
+  if (!fs.existsSync(gitignorePath)) {
+    fs.writeFileSync(gitignorePath, `${normalizedEntry}\n`);
+    log(`  Created: .gitignore (+${normalizedEntry})`, COLORS.green);
+    return true;
+  }
+
+  const content = fs.readFileSync(gitignorePath, 'utf8');
+  const lines = content.split(/\r?\n/).map(line => line.trim());
+  if (lines.includes(normalizedEntry)) {
+    log(`  Skip: .gitignore (already has ${normalizedEntry})`, COLORS.yellow);
+    return false;
+  }
+
+  const newContent = content.replace(/\s*$/, '') + `\n${normalizedEntry}\n`;
+  fs.writeFileSync(gitignorePath, newContent);
+  log(`  Updated: .gitignore (+${normalizedEntry})`, COLORS.green);
+  return true;
+}
+
 function init(targetDir, options = {}) {
   const { minimal = false, overwrite = false } = options;
   const kitDir = __dirname;
@@ -146,6 +170,7 @@ function init(targetDir, options = {}) {
   const folders = [
     '.agent/workflows',
     'current',
+    'current/secrets',
     'research',
     'ideation',
     'implementation planning',
@@ -175,6 +200,13 @@ function init(targetDir, options = {}) {
     path.join(kitDir, 'templates/current'),
     path.join(targetDir, 'current'),
     { overwrite: false } // Never overwrite current state
+  );
+
+  // Telegram config template (local secrets)
+  copyDir(
+    path.join(kitDir, 'templates/secrets'),
+    path.join(targetDir, 'current/secrets'),
+    { overwrite: false }
   );
 
   if (!minimal) {
@@ -231,6 +263,10 @@ function init(targetDir, options = {}) {
   // 9. Ensure pydantic in requirements.txt
   log('\nEnsuring Python dependencies...', COLORS.cyan);
   ensureRequirement(targetDir, 'pydantic');
+
+  // Ensure local secrets stay private
+  log('\nEnsuring .gitignore entries...', COLORS.cyan);
+  ensureGitignoreEntry(targetDir, 'current/secrets/');
 
   // Summary
   log('\n╔════════════════════════════════════════════╗', COLORS.green);

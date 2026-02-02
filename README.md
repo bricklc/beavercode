@@ -212,6 +212,29 @@ To update tools/MCP/CI as well:
 npx beavercode update --tools
 ```
 
+## Telegram Alerts (blocked loop)
+
+Beavercode can send Telegram alerts when the Codex loop hits a blocker.
+
+1) Initialize (creates `current/secrets/telegram.json`):
+```bash
+npx beavercode init
+```
+
+2) Fill in your Telegram bot token + chat ID:
+```
+current/secrets/telegram.json
+```
+
+3) Run the loop:
+```bash
+powershell -ExecutionPolicy Bypass -File tools\codex-loop.ps1
+```
+
+Notes:
+- `current/secrets/` is added to `.gitignore` during init.
+- You can customize `BlockerPatterns` and `StopHooks` in `tools/codex-loop.ps1`.
+
 ## License
 
 MIT
