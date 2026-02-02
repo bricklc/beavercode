@@ -262,6 +262,7 @@ function init(targetDir, options = {}) {
 }
 
 function update(targetDir, options = {}) {
+  const { tools = false } = options;
   log('\n╔════════════════════════════════════════════╗', COLORS.cyan);
   log('║         Ultrathink Kit Updater             ║', COLORS.cyan);
   log('╚════════════════════════════════════════════╝\n', COLORS.cyan);
@@ -274,7 +275,45 @@ function update(targetDir, options = {}) {
     { overwrite: true }
   );
 
-  log('\nWorkflows updated!', COLORS.green);
+  if (tools) {
+    log('\nUpdating tools...', COLORS.yellow);
+    copyDir(
+      path.join(__dirname, 'tools'),
+      path.join(targetDir, 'tools'),
+      { overwrite: true }
+    );
+
+    log('\nUpdating MCP server...', COLORS.yellow);
+    copyDir(
+      path.join(__dirname, 'mcp'),
+      path.join(targetDir, 'mcp'),
+      { overwrite: true, filter: (name) => !name.includes('node_modules') }
+    );
+
+    log('\nUpdating CI workflows...', COLORS.yellow);
+    copyDir(
+      path.join(__dirname, 'templates/github-workflows'),
+      path.join(targetDir, '.github/workflows'),
+      { overwrite: true }
+    );
+
+    const mcpPath = path.join(targetDir, '.mcp.json.template');
+    if (!fs.existsSync(mcpPath)) {
+      const mcpConfig = {
+        mcpServers: {
+          browser: {
+            command: "node",
+            args: ["{{PROJECT_ROOT}}/mcp/browser-server.js"]
+          }
+        }
+      };
+      fs.writeFileSync(mcpPath, JSON.stringify(mcpConfig, null, 2));
+      log(`  Created: .mcp.json.template`, COLORS.green);
+      log(`  Note: Rename to .mcp.json and update {{PROJECT_ROOT}}`, COLORS.yellow);
+    }
+  }
+
+  log('\nUpdate complete!', COLORS.green);
 }
 
 // CLI
@@ -285,6 +324,7 @@ const targetDir = process.cwd();
 const flags = {
   minimal: args.includes('--minimal'),
   overwrite: args.includes('--overwrite') || args.includes('-f'),
+  tools: args.includes('--tools') || args.includes('--full'),
 };
 
 switch (command) {
@@ -300,6 +340,7 @@ switch (command) {
     log('  npx ultrathink-kit init           # Full setup with tools & MCP');
     log('  npx ultrathink-kit init --minimal # Workflows only');
     log('  npx ultrathink-kit update         # Update workflows');
+    log('  npx ultrathink-kit update --tools # Update workflows + tools/MCP/CI');
     log('  npx ultrathink-kit init -f        # Force overwrite existing');
     break;
 }

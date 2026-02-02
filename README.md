@@ -207,6 +207,11 @@ npx beavercode update
 
 Updates `.agent/workflows/` files only.
 
+To update tools/MCP/CI as well:
+```bash
+npx beavercode update --tools
+```
+
 ## License
 
 MIT
