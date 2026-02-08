@@ -34,7 +34,7 @@ These workflows create the foundation before writing code:
 
 #### `/prioritize`
 **Prioritization & Scoring Rubric**
-Uses sequential thinking and Priority = (Impact × Urgency) / Effort to decide what to build now vs backlog.
+Uses sequential thinking and Priority = (Impact x Urgency) / Effort to decide what to build now vs backlog.
 **Used**: Evaluating new requests or managing backlog.
 
 #### `/research`
@@ -89,7 +89,13 @@ Step-by-step feature guides and onboarding tutorials.
 **Automated Visual Testing**
 Browser automation for UI testing with screenshot capture and agent observation.
 **Used**: After UI changes, before merging frontend code, during acceptance testing.
-**Flow**: Create commands → Run browser actions → Observe screenshots → Report results.
+**Flow**: Create commands -> Run browser actions -> Observe screenshots -> Report results.
+
+
+#### `/agent-exec`
+**Delegated Agent Execution**
+Prompt another agent via `codex exec` using a Pydantic-style task spec with a verification layer.
+**Used**: Delegating focused tasks with strict structure and preflight validation.
 
 #### `/handoff`
 **Baton Pass**
@@ -102,46 +108,45 @@ Modular session handoff layered on top of `current/` tracking and existing docs.
 
 ```
 User Request
-    ↓
+    |
 /prioritize (Score & Decide)
-    ↓
-[Score ≥ 7?] → YES → /ultrathink (Master Orchestrator)
-    ↓                      ↓
+    |
+[Score >= 7?] -> YES -> /ultrathink (Master Orchestrator)
+    |                      |
     NO                 Phase 1: Discovery
-    ↓                      ↓
+    |                      |
 [Add to backlog]      /status (Read current state)
-                           ↓
+                           |
                       Phase 2: Documentation
-                           ↓
+                           |
                       /research (If needed)
-                           ↓
+                           |
                       /ideate (Design & alternatives)
-                           ↓
+                           |
                       /plan (Implementation plan)
-                           ↓
+                           |
                       Validation gate (tools/validate_docs.py)
-                           ↓
+                           |
                       /test-plan (Test cases)
-                           ↓
+                           |
                       Phase 3: Review Gate
-                           ↓
-                      [User approves?] → YES → Implementation
-                           ↓                         ↓
+                           |
+                      [User approves?] -> YES -> Implementation
+                           |                         |
                            NO                   Execute plan
-                           ↓                         ↓
+                           |                         |
                       Revise docs              Run tests
-                                                    ↓
+                                                    |
                                                /verify-tests (auto)
-                                                    ↓
+                                                    |
                                                [Tests pass?]
-                                                    ↓
-                                                   YES → /walkthrough
-                                                    ↓
-                                                   NO → /debug
-                                                    ↓
+                                                    |
+                                                   YES -> /walkthrough
+                                                    |
+                                                   NO -> /debug
+                                                    |
                                                /status (Update completion)
 ```
-
 ## Scoring Rubric
 
 ### Scoring Rubric (1-10)
@@ -150,10 +155,10 @@ User Request
 - **Effort**: Months (10), Weeks (7-9), Days (4-6), Hours (1-3).
 
 ### Priority Score
-**Formula**: `(Impact × Urgency) / Effort`
+**Formula**: `(Impact x Urgency) / Effort`
 
 **Decisions**:
-- **≥ 10**: NOW - Immediate priority
+- **>= 10**: NOW - Immediate priority
 - **7-9.9**: NOW - High priority
 - **4-6.9**: NEXT - Next iteration
 - **2-3.9**: BACKLOG - Not urgent
@@ -171,52 +176,51 @@ All workflows interact with these documentation folders:
 
 ```
 project/
-├── current/                      # Single source of truth
-│   ├── status.md                 # Active phase, tasks, blockers
-│   ├── todo.md                   # Priority queue
-│   └── context.md                # Session decisions & notes
-│
-├── research/                     # Research papers
-│   ├── README.md
-│   └── <topic>-<date>.md
-│
-├── ideation/                     # Design alternatives
-│   ├── README.md
-│   └── <idea>-<date>-<instance>.md
-│
-├── implementation planning/      # Scoped plans
-│   ├── README.md
-│   └── <feature>-<date>.md
-│
-├── testing/                      # Test plans & results
-│   ├── README.md
-│   └── <feature>-<date>-<run>.md
-│
-├── debugging/                    # Bug tracking
-│   ├── README.md
-│   └── <bug>-<date>-<instance>.md
-│
-├── walkthrough/                  # User guides
-│   ├── README.md
-│   └── <topic>-<date>-<version>.md
-│
-└── core/                         # Code modules
-    └── <module>/
-        ├── README.md
-        ├── <module>.js
-        ├── docs/
-        └── tests/
+|-- current/                      # Single source of truth
+|   |-- status.md                 # Active phase, tasks, blockers
+|   |-- todo.md                   # Priority queue
+|   `-- context.md                # Session decisions & notes
+|
+|-- research/                     # Research papers
+|   |-- README.md
+|   `-- <topic>-<date>.md
+|
+|-- ideation/                     # Design alternatives
+|   |-- README.md
+|   `-- <idea>-<date>-<instance>.md
+|
+|-- implementation planning/      # Scoped plans
+|   |-- README.md
+|   `-- <feature>-<date>.md
+|
+|-- testing/                      # Test plans & results
+|   |-- README.md
+|   `-- <feature>-<date>-<run>.md
+|
+|-- debugging/                    # Bug tracking
+|   |-- README.md
+|   `-- <bug>-<date>-<instance>.md
+|
+|-- walkthrough/                  # User guides
+|   |-- README.md
+|   `-- <topic>-<date>-<version>.md
+|
+`-- core/                         # Code modules
+    `-- <module>/
+        |-- README.md
+        |-- <module>.js
+        |-- docs/
+        `-- tests/
 ```
-
 ## Quick Reference
 
 ### Starting a New Feature
 ```
-1. Initialize project → conda env + git repo
-2. /prioritize → Score the idea
-3. [If score ≥ 7] /ultrathink → Full cycle
-4. Run validation gate → tools/validate_docs.py
-5. /status → Update current state
+1. Initialize project -> conda env + git repo
+2. /prioritize -> Score the idea
+3. [If score >= 7] /ultrathink -> Full cycle
+4. Run validation gate -> tools/validate_docs.py
+5. /status -> Update current state
 ```
 
 ## Project Initialization
@@ -229,20 +233,20 @@ Before any implementation planning:
 
 ### Bug Fixing
 ```
-1. /debug → Document the bug
+1. /debug -> Document the bug
 2. Implement fix
-3. /test-plan → Update with regression test
-4. /verify-tests → Run tests & check results (auto)
-5. /status → Mark complete
+3. /test-plan -> Update with regression test
+4. /verify-tests -> Run tests & check results (auto)
+5. /status -> Mark complete
 ```
 
 ### Testing Workflow
 ```
 After writing code:
 1. python run_tests.py tests/<module>.py (run autonomously)
-2. /verify-tests → Auto-reads transcript & updates todo.md
-3. [If passed] → Continue to next milestone
-4. [If failed] → /debug → Fix → Re-run
+2. /verify-tests -> Auto-reads transcript & updates todo.md
+3. [If passed] -> Continue to next milestone
+4. [If failed] -> /debug -> Fix -> Re-run
 ```
 
 ### Visual Testing Workflow
@@ -250,11 +254,11 @@ After writing code:
 After UI changes:
 1. Update tools/ui-elements.json (if new elements)
 2. Create test commands JSON
-3. /visual-test → Run browser actions
+3. /visual-test -> Run browser actions
 4. Agent reads screenshots
 5. Agent fills observations.md
-6. [If passed] → Update test plan
-7. [If failed] → /debug → Fix → Re-run
+6. [If passed] -> Update test plan
+7. [If failed] -> /debug -> Fix -> Re-run
 ```
 
 ### Session Management
@@ -297,9 +301,9 @@ Place anywhere in workflow to auto-run ALL command steps:
 
 1. **Read before writing**: Always check `current/` folder first
 2. **Never delete history**: Mark as rejected, completed, or waitlisted
-3. **Link documents**: Cross-reference research → ideation → plans
+3. **Link documents**: Cross-reference research -> ideation -> plans
 4. **Update timestamps**: Track when changes occur
-5. **Use sequential thinking**: For complex problems (score ≥ 7)
+5. **Use sequential thinking**: For complex problems (score >= 7)
 6. **Document rejections**: Why we're NOT doing something
 7. **Verify thoroughly**: Test before marking complete
 8. **Handoff clearly**: Update context.md for next session
@@ -314,7 +318,7 @@ For complex problems, workflows use the `mcp_sequential-thinking_sequentialthink
 - Reach well-reasoned conclusions
 
 **When to use sequential thinking**:
-- Priority score ≥ 7 (complex, high-impact work)
+- Priority score >= 7 (complex, high-impact work)
 - Architectural decisions
 - Trade-off analysis
 - Problem investigation
@@ -325,15 +329,15 @@ For complex problems, workflows use the `mcp_sequential-thinking_sequentialthink
 ### First Time Setup
 1. Create `current/` files (`status.md`, `todo.md`, `context.md`) using `/status` templates.
 2. Review `/ultrathink`, `/prioritize`, and `/status`.
-3. Start with a request: `/prioritize` → Score → Execute.
+3. Start with a request: `/prioritize` -> Score -> Execute.
 
 ### Example Session
-1. **Prioritize**: `/prioritize` → Score 11.2 (NOW).
-2. **Discovery**: `/status` → Read state.
+1. **Prioritize**: `/prioritize` -> Score 11.2 (NOW).
+2. **Discovery**: `/status` -> Read state.
 3. **Docs**: `/research`, `/ideate`, `/plan`, `/test-plan`.
-4. **Review**: Present docs → Get approval.
-5. **Implementation**: Execute plan → Build → Run tests.
-6. **Close**: `/walkthrough` → `/status` (Mark complete).
+4. **Review**: Present docs -> Get approval.
+5. **Implementation**: Execute plan -> Build -> Run tests.
+6. **Close**: `/walkthrough` -> `/status` (Mark complete).
 
 ## Maintenance
 
@@ -346,3 +350,5 @@ For complex problems, workflows use the `mcp_sequential-thinking_sequentialthink
 ---
 
 **Remember**: The goal is craftsmanship, not just code. Take time to think, plan, and document. The code will be better for it.
+
+
